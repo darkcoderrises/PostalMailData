@@ -1,0 +1,155 @@
+<html>
+<head>
+	<title>Digital Humanities Project - Post office</title>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.jqplot.js"></script>
+	<script type="text/javascript" src="js/plugins/jqplot.highlighter.js"></script>
+	<link rel="stylesheet" type="text/css" href="js/jquery.jqplot.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">	
+</head>
+<body class="container">
+	<div style="margin:1px solid red; padding:20px;">
+		<h2 class="row" style="margin:40px; text-align:center;">Total Mail Data from 2000-2013</h2>
+
+		<div class="row" style="margin:20px; text-align:center;"> 
+			<div class="col-md-3"></div>
+			<div class="col-md-3"><h5>Particular : </h5><select id="title1" class="form-control"> </select></div>
+			<div class="col-md-3"><h5>Sub-category : </h5><select id="title2" class="form-control"> </select></div>
+			<div class="col-md-3"></div>
+		</div>
+
+		<div id="chart1" style="width:70%; margin-top: 30px; margin-left:auto; margin-right:auto; display:block;">
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var map = {};
+			map['list'] = [];
+
+			$.ajax({
+				type: "GET",
+				url: "total_mail.csv",
+				dataType: "text",
+				success: function(data) {processData(data);}
+			});
+
+			$.jqplot.config.enablePlugins = true;
+			function PlotChart(val, values, title) {
+				$("#chart1").empty();
+				var plot = $.jqplot ("chart1" ,[values],
+				{
+					title: "<b>"+title+"</b>" ,
+					grid: {
+						background: '#fffdf6',   
+						borderColor: '#999999'     
+					},              
+
+					axes: {
+						xaxis: {
+							ticks:[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
+							tickRenderer: $.jqplot.AxisTickRenderer,
+							tickOptions: {
+								formatter: function(format, value) { 
+									if (value>=1 && value <= val.length) return val[value-1];
+									else return "";
+								} 
+							},
+						},
+						yaxis: {        
+							tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+							tickOptions: {
+								formatString: "%#.2f",
+								textColor:'#FFA500',
+								fontSize:'1em',
+								fontFamily: '"Trebuchet MS",Arial,Helvetica,sans-serif'
+							}
+						}
+					},
+					legend:{
+						show:false,
+						location:'se',
+						placement:"insideGrid"
+					}
+				});
+			}
+
+			function removeString(st) {
+				return st.replace(new RegExp('"', 'g'), '');
+			}
+
+			function processData(allText) {
+				var allTextLines = allText.split(/\r\n|\n/);
+				var headers = allTextLines[0].split(',');
+				var val = [], values = [], title = "";
+
+				for (var i=1; i<allTextLines.length; i++) {
+					var data = allTextLines[i].split(',');
+					if (data.length == headers.length) {
+						val = []
+						values = []
+
+						title = removeString(data[0]) + " : " + removeString(data[1]);
+						for (var j=2; j<headers.length; j++) {
+							val.push(removeString(headers[j]));
+							values.push(parseInt(removeString(data[j])));
+						}
+
+						var obj = {};
+						obj['val'] = val;
+						obj['value'] = values;
+						obj['title'] = title;
+						var title1 = removeString(data[0]), title2 = removeString(data[1]);
+
+						if (map[title1] == null) {
+							map[title1] = {};
+							map[title1]['list'] = [];
+							map['list'].push(title1);
+						}
+
+						map[title1]['list'].push(title2);
+						map[title1][title2.replace(new RegExp(' ', 'g'), '')] = obj;
+					}
+				}
+				initialise();
+			};
+
+			function setArray(arr, id) {
+				$(id).empty();
+				arr.forEach(function (element) {
+					$(id).append($('<option>', { 
+						value: element,
+						text : element 
+					}));
+				});
+			}
+
+			function getSelected(id) {
+				var str = "";
+				$( id+" option:selected" ).each(function() {
+					str += $( this ).text() + " ";
+				});
+				return str.replace(new RegExp(' ', 'g'), '');
+			}
+
+			function update() {
+				var obj = map[getSelected('#title1')][getSelected('#title2')];
+				PlotChart(obj['val'], obj['value'], obj['title']);
+			}
+
+			function initialise() {
+				setArray(map['list'], '#title1');
+
+				$('#title1').change(function() {
+					setArray(map[getSelected('#title1')]['list'], '#title2');
+					update();
+				}).change();
+
+				$('#title2').change(function() {
+					update();
+				}).change();
+			}
+		});
+	</script>
+</body>
+</html>
