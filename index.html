@@ -1,4 +1,5 @@
 <html>
+
 <head>
 	<title>Digital Humanities Project - Post office</title>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
@@ -7,9 +8,10 @@
 	<link rel="stylesheet" type="text/css" href="js/jquery.jqplot.css" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">	
 </head>
+
 <body class="container">
 	<div style="margin:; padding:20px;">
-		<h2 class="row" style="margin:40px; text-align:center;"><u>Total Mail Data from 2000-2013</u></h2>
+		<h2 class="row" style="margin:40px; text-align:center;">Total Mail Data from 2000-2013</h2>
 
 		<div class="row" style="margin:20px; text-align:center;"> 
 			<div class="col-md-3"></div>
@@ -20,6 +22,15 @@
 
 		<div id="chart1" style="width:70%; margin-top: 30px; margin-left:auto; margin-right:auto; display:block;">
 		</div>
+
+		<table class="table table-bordered table-striped table-hover" style="width:80%; margin-top: 60px; margin-left:auto; margin-right:auto;">
+			<tr> <th> Link </th> <th> Description </th>
+			
+			<tr> <td rowspan="2"> <a href="https://data.gov.in/catalog/cases-registered-and-their-disposal-under-dowry-deaths"> Dowry Cases </a> </td> <td> Cases registered and their disposal under Dowry Deaths from 2000-2013 </td> </tr> <tr> <td> Cases registered and their disposal under Dowry Prohibition from 2001 - 2013 <a href="https://data.gov.in/catalog/cases-registered-and-their-disposal-under-dowry-prohibition-act"> (link) </a> </td> </tr> <tr> </tr>
+			
+			<tr> <td rowspan="5"> <a href="https://data.gov.in/keywords/post-office"  style="margin:auto;"> Post Office data </a> </td> <td> Total Mail Merged Traffic Handled In Post Offices </td> </tr> 
+			<tr> <td> Receipts And Charges of The Post Offices </td> </tr> <tr> <td> Number of Post Office Savings Banks / Depositors And Amount of Deposits </td> </tr> <tr> <td> Number of Post Offices / Letter Boxes And Postal Articles </td> </tr> <tr> <td> General Statistics of Post Offices </td> </tr>
+		</table>
 	</div>
 
 	<script type="text/javascript">
@@ -43,8 +54,7 @@
 					grid: {
 						background: '#fffdf6',   
 						borderColor: '#999999'     
-					},              
-
+					},
 					axes: {
 						xaxis: {
 							ticks:[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
